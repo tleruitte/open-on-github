@@ -1,6 +1,5 @@
 node_modules
 out
-*.vsix
 
 # macOS
 .DS_Store
