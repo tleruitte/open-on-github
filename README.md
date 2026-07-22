@@ -4,7 +4,7 @@ VS Code extension that opens the current file and cursor line on GitHub in the r
 
 ## How to use
 
-1. Install the extension (from a `.vsix` or once published, from the Marketplace).
+1. Install the extension (from a `.vsix` or once published, from the [Open VSX Registry](https://open-vsx.org/)).
 
 2. Open a workspace folder that is a Git clone of a **GitHub** repository. The remote named **`origin`** must point at `github.com` (HTTPS or SSH).
 
@@ -54,7 +54,9 @@ This runs [`@vscode/vsce`](https://github.com/microsoft/vscode-vsce) via `npx` a
 
 Install the VSIX in VS Code: **Extensions** view → **⋯** menu → **Install from VSIX…** and select the file.
 
-## Publish a new version
+## Publish a new version to Open VSX
+
+Before publishing, expose your [Open VSX personal access token](https://open-vsx.org/user-settings/tokens) as the `OVSX_PAT` environment variable.
 
 1. Ensure dependencies are installed and the extension compiles:
 
@@ -71,14 +73,13 @@ Install the VSIX in VS Code: **Extensions** view → **⋯** menu → **Install 
 
    Use `minor` or `major` instead of `patch` when appropriate. This updates the version in `package.json` and `package-lock.json`, then creates a Git commit and tag for the new version.
 
-3. Package and publish the extension:
+3. Package and publish the extension to Open VSX:
 
-   ```bash
+   ```fish
    npm run package
-   npx @vscode/vsce publish
+   set VERSION (node --print "require('./package.json').version")
+   npx ovsx publish "releases/open-on-github-$VERSION.vsix"
    ```
-
-   The first time you publish, authenticate the `tleruitte` publisher with `npx @vscode/vsce login tleruitte` and a Visual Studio Marketplace personal access token.
 
 4. Push the version commit and tag:
 
