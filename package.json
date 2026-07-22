@@ -31,7 +31,8 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "package": "npx @vscode/vsce package"
+    "prepackage": "node -e \"require('node:fs').mkdirSync('releases', { recursive: true })\"",
+    "package": "npx @vscode/vsce package --out releases"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

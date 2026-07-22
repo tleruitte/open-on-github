@@ -36,7 +36,10 @@ function parseGithubRemote(
 }
 
 function getOriginUrl(gitRoot: string): string {
-  return git(gitRoot, ["remote", "get-url", "origin"]);
+  // Read the configured value directly. `git remote get-url` applies
+  // url.<base>.insteadOf rewrites, which can replace github.com with a
+  // machine-specific SSH alias that is unsuitable for a browser URL.
+  return git(gitRoot, ["config", "--get", "remote.origin.url"]);
 }
 
 /**

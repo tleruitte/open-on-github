@@ -1,5 +1,7 @@
 .vscode/**
 .vscode-test/**
+releases/**
+.journal-path
 src/**
 .gitignore
 **/tsconfig.json

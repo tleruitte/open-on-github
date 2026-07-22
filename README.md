@@ -50,6 +50,38 @@ npm run compile
 npm run package
 ```
 
-This runs [`@vscode/vsce`](https://github.com/microsoft/vscode-vsce) via `npx` and writes `open-on-github-0.1.1.vsix` (version from `package.json`) in the project root.
+This runs [`@vscode/vsce`](https://github.com/microsoft/vscode-vsce) via `npx` and writes `releases/open-on-github-0.1.1.vsix` (version from `package.json`).
 
 Install the VSIX in VS Code: **Extensions** view → **⋯** menu → **Install from VSIX…** and select the file.
+
+## Publish a new version
+
+1. Ensure dependencies are installed and the extension compiles:
+
+   ```bash
+   npm install
+   npm run compile
+   ```
+
+2. Upgrade the version using [semantic versioning](https://semver.org/):
+
+   ```bash
+   npm version patch
+   ```
+
+   Use `minor` or `major` instead of `patch` when appropriate. This updates the version in `package.json` and `package-lock.json`, then creates a Git commit and tag for the new version.
+
+3. Package and publish the extension:
+
+   ```bash
+   npm run package
+   npx @vscode/vsce publish
+   ```
+
+   The first time you publish, authenticate the `tleruitte` publisher with `npx @vscode/vsce login tleruitte` and a Visual Studio Marketplace personal access token.
+
+4. Push the version commit and tag:
+
+   ```bash
+   git push origin main --follow-tags
+   ```

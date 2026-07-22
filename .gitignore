@@ -1,5 +1,7 @@
 node_modules
 out
+releases
+.journal-path
 
 # macOS
 .DS_Store
