@@ -50,6 +50,6 @@ npm run compile
 npm run package
 ```
 
-This runs [`@vscode/vsce`](https://github.com/microsoft/vscode-vsce) via `npx` and writes `open-on-github-0.1.0.vsix` (version from `package.json`) in the project root.
+This runs [`@vscode/vsce`](https://github.com/microsoft/vscode-vsce) via `npx` and writes `open-on-github-0.1.1.vsix` (version from `package.json`) in the project root.
 
 Install the VSIX in VS Code: **Extensions** view → **⋯** menu → **Install from VSIX…** and select the file.
