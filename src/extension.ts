@@ -18,19 +18,31 @@ function getGitRoot(startPath: string): string | undefined {
   }
 }
 
+function isGithubHost(host: string): boolean {
+  const h = host.toLowerCase();
+  return h === "github.com" || h.endsWith(".github.com");
+}
+
 function parseGithubRemote(
   remoteUrl: string,
-): { owner: string; repo: string } | undefined {
+): { host: string; owner: string; repo: string } | undefined {
   const u = remoteUrl.trim();
-  const ssh = /^git@github\.com:([^/]+)\/(.+?)(?:\.git)?$/i.exec(u);
-  if (ssh) {
-    return { owner: ssh[1], repo: ssh[2].replace(/\.git$/i, "") };
+  const ssh = /^git@([^:]+):([^/]+)\/(.+?)(?:\.git)?$/i.exec(u);
+  if (ssh && isGithubHost(ssh[1])) {
+    return {
+      host: ssh[1],
+      owner: ssh[2],
+      repo: ssh[3].replace(/\.git$/i, ""),
+    };
   }
-  const https = /^https:\/\/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/i.exec(
-    u,
-  );
-  if (https) {
-    return { owner: https[1], repo: https[2].replace(/\.git$/i, "") };
+  const https =
+    /^https:\/\/([^/]+)\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/i.exec(u);
+  if (https && isGithubHost(https[1])) {
+    return {
+      host: https[1],
+      owner: https[2],
+      repo: https[3].replace(/\.git$/i, ""),
+    };
   }
   return undefined;
 }
@@ -100,7 +112,7 @@ export function activate(context: vscode.ExtensionContext): void {
       const parsed = parseGithubRemote(originUrl);
       if (!parsed) {
         void vscode.window.showErrorMessage(
-          `Origin is not a github.com URL: ${originUrl}`,
+          `Origin is not a GitHub URL: ${originUrl}`,
         );
         return;
       }
@@ -115,7 +127,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
       const line = editor.selection.active.line + 1;
       const blobPath = toGithubBlobPath(rel.split(path.sep).join("/"));
-      const url = `https://github.com/${parsed.owner}/${parsed.repo}/blob/${defaultBranch}/${blobPath}#L${line}`;
+      const url = `https://${parsed.host}/${parsed.owner}/${parsed.repo}/blob/${defaultBranch}/${blobPath}#L${line}`;
 
       await vscode.env.openExternal(vscode.Uri.parse(url));
     },
