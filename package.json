@@ -13,7 +13,13 @@
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Other"
+    "SCM Providers"
+  ],
+  "keywords": [
+    "github",
+    "open",
+    "permalink",
+    "git"
   ],
   "activationEvents": [
     "onCommand:openOnGithub.openCurrentLine"

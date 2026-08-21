@@ -23,6 +23,15 @@ function isGithubHost(host: string): boolean {
   return h === "github.com" || h.endsWith(".github.com");
 }
 
+/** Git SSH host from a remote may differ from the web UI host (GHE Cloud). */
+function githubWebHost(gitHost: string): string {
+  const h = gitHost.toLowerCase();
+  if (h === "github.com" || h.endsWith(".github.com")) {
+    return "github.com";
+  }
+  return gitHost;
+}
+
 function parseGithubRemote(
   remoteUrl: string,
 ): { host: string; owner: string; repo: string } | undefined {
@@ -127,7 +136,8 @@ export function activate(context: vscode.ExtensionContext): void {
 
       const line = editor.selection.active.line + 1;
       const blobPath = toGithubBlobPath(rel.split(path.sep).join("/"));
-      const url = `https://${parsed.host}/${parsed.owner}/${parsed.repo}/blob/${defaultBranch}/${blobPath}#L${line}`;
+      const webHost = githubWebHost(parsed.host);
+      const url = `https://${webHost}/${parsed.owner}/${parsed.repo}/blob/${defaultBranch}/${blobPath}#L${line}`;
 
       await vscode.env.openExternal(vscode.Uri.parse(url));
     },
