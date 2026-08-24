@@ -1,12 +1,21 @@
 import * as vscode from "vscode";
-import { execFileSync } from "child_process";
-import * as path from "path";
+import { execFileSync } from "node:child_process";
+import * as path from "node:path";
+
+/** Env for git subprocesses: ignore inherited worktree overrides from the IDE. */
+function gitEnv(): NodeJS.ProcessEnv {
+  const env = { ...process.env };
+  delete env.GIT_DIR;
+  delete env.GIT_WORK_TREE;
+  return env;
+}
 
 function git(cwd: string, args: string[]): string {
   return execFileSync("git", args, {
     cwd,
     encoding: "utf8",
     maxBuffer: 1024 * 1024,
+    env: gitEnv(),
   }).trim();
 }
 
