@@ -4,5 +4,6 @@ releases/**
 .journal-path
 src/**
 .gitignore
+CONTRIBUTING.md
 **/tsconfig.json
 **/*.map
