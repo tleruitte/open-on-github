@@ -72,16 +72,47 @@ function getOriginUrl(gitRoot: string): string {
   return git(gitRoot, ["config", "--get", "remote.origin.url"]);
 }
 
-/**
- * Resolves the default branch that `origin/HEAD` points to (e.g. main, master).
- */
-function getDefaultBranchName(gitRoot: string): string {
-  const abbrev = git(gitRoot, ["rev-parse", "--abbrev-ref", "origin/HEAD"]);
+function refExists(gitRoot: string, ref: string): boolean {
+  try {
+    git(gitRoot, ["show-ref", "--verify", "--quiet", ref]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function getOriginHeadBranch(gitRoot: string): string | undefined {
+  let abbrev: string;
+  try {
+    abbrev = git(gitRoot, ["rev-parse", "--abbrev-ref", "origin/HEAD"]);
+  } catch {
+    return undefined;
+  }
   const prefix = "origin/";
-  if (!abbrev.startsWith(prefix)) {
-    throw new Error(`Unexpected origin/HEAD: ${abbrev}`);
+  if (!abbrev.startsWith(prefix) || abbrev.length === prefix.length) {
+    return undefined;
   }
   return abbrev.slice(prefix.length);
+}
+
+/**
+ * Resolves the default branch that `origin/HEAD` points to (e.g. main, master).
+ * Repositories created with `git init` and then pushed have no `origin/HEAD`,
+ * so fall back to a conventional branch name that exists on origin.
+ */
+function getDefaultBranchName(gitRoot: string): string {
+  const fromOriginHead = getOriginHeadBranch(gitRoot);
+  if (fromOriginHead) {
+    return fromOriginHead;
+  }
+  for (const candidate of ["main", "master"]) {
+    if (refExists(gitRoot, `refs/remotes/origin/${candidate}`)) {
+      return candidate;
+    }
+  }
+  throw new Error(
+    "Could not determine the default branch: origin/HEAD is not set and neither origin/main nor origin/master exists. Run `git remote set-head origin --auto`.",
+  );
 }
 
 function toGithubBlobPath(relativePath: string): string {

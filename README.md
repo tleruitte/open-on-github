@@ -1,6 +1,6 @@
 # Open on GitHub
 
-VS Code extension that opens the current file and cursor line on GitHub in the repository **default branch** (from `origin/HEAD`).
+VS Code extension that opens the current file and cursor line on GitHub in the repository **default branch** (from `origin/HEAD`, or `origin/main` / `origin/master` when `origin/HEAD` is not set).
 
 ## How to use
 
@@ -14,7 +14,7 @@ VS Code extension that opens the current file and cursor line on GitHub in the r
 
 5. Optional: assign a keyboard shortcut in **Keyboard Shortcuts** by searching for `Open Current Line on GitHub`.
 
-If nothing opens, ensure `git remote get-url origin` is a GitHub URL and that `origin/HEAD` is set (for example `git remote set-head origin -a`).
+If nothing opens, ensure `git remote get-url origin` is a GitHub URL. If the default branch is neither `main` nor `master`, ensure `origin/HEAD` is set (for example `git remote set-head origin -a`).
 
 ## Development
 
